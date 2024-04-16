@@ -24,7 +24,16 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["pydantic-settings", "python-dotenv", "gitpython", "requests", "tqdm"]
+dependencies = [
+    "openai",
+    "tyro",
+    "nltk",
+    "pydantic-settings",
+    "python-dotenv",
+    "gitpython",
+    "requests",
+    "tqdm"
+]
 
 [project.urls]
 Documentation = "https://github.com/unknown/autoformalism-with-llms#readme"

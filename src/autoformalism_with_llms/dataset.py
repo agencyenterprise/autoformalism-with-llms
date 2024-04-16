@@ -60,15 +60,16 @@ class MathDataset:
         """Get the dataset for a specific subject."""
         return MathDataset([q for q in self.questions if q.subject == subject])
 
-    def get_question(self, subject: str, question_number: str | int) -> "MathDataset":
+    def get_question(self, question_number: str | int):
         """Get the dataset for a specific question from a specific subject."""
-        return MathDataset(
-            [
-                q
-                for q in self.questions
-                if q.subject == subject and q.question_number == str(question_number)
-            ]
-        )
+        matches = [
+            q for q in self.questions if q.question_number == str(question_number)
+        ]
+        if len(matches) == 0:
+            raise ValueError(f"No question found with number {question_number}")
+        if len(matches) == 1:
+            return matches[0]
+        return matches
 
 
 class MiniF2FMATH(MathDataset):
