@@ -139,9 +139,22 @@ def get_boxed_answer(question: str) -> str | None:
         str: The boxed answer string.
 
     """
-    regex = r"\\boxed{(.+?)}"
-    boxed_answer = re.search(regex, question)
-    if boxed_answer:
-        return boxed_answer.group(1)
-    else:
+    phrase = r"\boxed{"
+    try:
+        index = question.index(phrase) + len(phrase) 
+    except ValueError:
         return None
+    open_count = 1 # since we start after \boxed{ we have one open brace
+    close_count = 0
+    end_index = None
+    for i, c in enumerate(question[index:]):
+        if c == "{":
+            open_count += 1
+        elif c == "}":
+            close_count += 1
+        if open_count == close_count:
+            end_index = i
+            break
+    if end_index is None:
+        return None
+    return question[index: index + end_index]
