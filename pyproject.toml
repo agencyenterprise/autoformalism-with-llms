@@ -26,6 +26,9 @@ classifiers = [
 ]
 dependencies = [
     "openai",
+    "transformers",
+    "bitsandbytes",
+    "accelerate",
     "tyro",
     "nltk",
     "pydantic-settings",
