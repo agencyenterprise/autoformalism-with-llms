@@ -7,6 +7,33 @@ import re
 from autoformalism_with_llms.dataset import MathQuestion
 
 
+def convert_messages_to_llama3(messages: list[dict]) -> str:
+    """Convert a list of messages to a llama3 string.
+
+    See:
+        https://llama.meta.com/docs/model-cards-and-prompt-formats/meta-llama-3/
+
+    Args:
+        messages (list[dict]): A list of messages.
+
+    Returns:
+        str: The llama3 string.
+    """
+    HEADER_START = "<|start_header_id|>"
+    HEADER_END = "<|end_header_id|>"
+    role_template = HEADER_START + "{role}" + HEADER_END + "\n\n"
+    llama3 = []
+    llama3.append("<|begin_of_text|>")
+    for message in messages:
+        msg = role_template.format(role=message["role"])
+        msg += message["content"]
+        msg += "<|eot_id|>"
+        llama3.append(msg)
+
+    llama3.append(role_template.format(role="assistant"))
+    return "".join(llama3)
+
+
 def informal_to_formal_messages(questions: list[MathQuestion]) -> list[dict]:
     """Convert the list of MathQuestions to a message string."""
     messages = []
@@ -141,10 +168,10 @@ def get_boxed_answer(question: str) -> str | None:
     """
     phrase = r"\boxed{"
     try:
-        index = question.index(phrase) + len(phrase) 
+        index = question.index(phrase) + len(phrase)
     except ValueError:
         return None
-    open_count = 1 # since we start after \boxed{ we have one open brace
+    open_count = 1  # since we start after \boxed{ we have one open brace
     close_count = 0
     end_index = None
     for i, c in enumerate(question[index:]):
@@ -157,4 +184,4 @@ def get_boxed_answer(question: str) -> str | None:
             break
     if end_index is None:
         return None
-    return question[index: index + end_index]
+    return question[index : index + end_index]
